@@ -1,4 +1,5 @@
 // Check README.md file for information of Roster API
+// Libraries used: jQuery, Bootstrap
 
 // Get latest acadGroups from API
 $.get("https://classes.cornell.edu/api/2.0/config/acadGroups.json", {roster: 'FA19'}, data => {
@@ -28,7 +29,6 @@ function search() {
     const sub = input.split(" ")[0].toUpperCase();
     const num = input.split(" ")[1];
 
-
     $.get("https://classes.cornell.edu/api/2.0/search/classes.json", { roster: 'FA19', subject: sub, q: num }, data => {
         
         console.log(data);
@@ -48,6 +48,7 @@ function search() {
 }
 
 function requirements() {
+    // Define requirement section
     const reqs = $("#reqs");
 
     // Clear all text inside element
