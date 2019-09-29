@@ -28,13 +28,23 @@
                     <!-- [Subject data from API] -->
                 </select>
             </div>
+            
+            <!-- Add course with search -->
+            <div>
+                <label for="search">Add Course(s)</label>
+                <div class="input-group">
+                    <input name="search" id="search" type="text" class="form-control">
+                    <div class="input-group-append">
+                        <button class="btn btn-danger" type="button" onclick="search()">Add</button>
+                    </div>
+                </div>
+                <div id="courses" class="mt-2"></div>
+            </div>
         </div>
 
         <div class="container">
             <h1>Requirements</h1>
-            <div id="reqs">
-
-            </div>
+            <div id="reqs"></div>
         </div>
 
         <!-- jQuery 3.3.1 and Bootstrap dependences CDN -->
