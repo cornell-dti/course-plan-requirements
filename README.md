@@ -1,4 +1,4 @@
-# cp-requirements
+# course-plan-requirements
 Requirements algorithm for Course Plan 📝
 
 Documentation on Class Roster API
