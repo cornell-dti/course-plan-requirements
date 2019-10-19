@@ -1,10 +1,11 @@
+const password = require('./password').password;
 // Import express for creating REST APIs
 const express = require('express');
 const app = express();
 
 // Import MongoDB client package
 const MongoClient = require('mongodb').MongoClient;
-const uri = "mongodb+srv://theresa:DTI2019@requirements-q2gjp.mongodb.net/test?retryWrites=true&w=majority";
+const uri = "mongodb+srv://admin:"+password+"@course-plan-t2nrj.mongodb.net/test?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 // Load all files in /public folder
