@@ -11,7 +11,10 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 // Load all files in /public folder
 app.use(express.static(__dirname + '/public'));
 
-app.get("/get-data", (req, res) => {
+app.get("/college", (req, res) => {
+
+    let name = req.query.name;
+
     client.connect(err => {
         const collection = client.db("course-plan").collection("requirements");
         collection.find().toArray((err, doc) => {
