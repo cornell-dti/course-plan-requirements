@@ -1,5 +1,5 @@
 const university = {
-    type: "all",
+    type: "university",
     value: "UNI",
     name: "University Requirements",
     requirements: [
@@ -39,7 +39,115 @@ const university = {
 }
 
 const as = {
-    type: ""
+    type: "college",
+    value: "AS",
+    name: "Arts and Sciences Requirements",
+    requirements: [
+        {
+            name: "CAS Credits",
+            multiplePaths: false,
+            search: "acadgroup",
+            reqs: ["AS"],
+            minCreds: 100,
+            maxCreds: 120,
+            uniqueCourses: 0,
+            majorDep: false
+        },
+        {
+            name: "Freshman Writing Seminars (FWS)",
+            multiplePaths: false,
+            search: "title",
+            reqs: ["FWS:"],
+            minCreds: 6,
+            maxCreds: 12,
+            uniqueCourses: 0,
+            majorDep: false
+        },
+        {
+            name: "Foreign Language Requirement",
+            multiplePaths: true,
+            paths: [
+                {
+                    name: "Intermediate Language Course",
+                    search: "level",
+                    reqs: [["CHIN 2000"]],
+                    minCreds: 0,
+                    maxCreds: 0,
+                    uniqueCourses: 0,
+                    majorDep: false
+                },
+                {
+                    name: "Intermediate Language Course",
+                    search: "subject",
+                    reqs: [["CHIN", "FREN"]],
+                    minCreds: 11,
+                    maxCreds: 120,
+                    uniqueCourses: 0,
+                    majorDep: false
+                }
+            ]
+        },
+        {
+            name: "Four Courses in Physical & Biological Sciences and Mathematics & Quantitative Reasoning",
+            multiplePaths: false,
+            search: "dist",
+            reqs: [["PBS-AS", "PBSS-AS", "MQR-AS"], ["PBS-AS", "PBSS-AS", "MQR-AS"], ["PBS-AS", "PBSS-AS", "MQR-AS"], ["PBS-AS", "PBSS-AS", "MQR-AS"]],
+            minCreds: 0,
+            maxCreds: 0,
+            uniqueCourses: 0,
+            majorDep: false
+        },
+        {
+            name: "Physical & Biological Sceiences (PBS-AS)",
+            multiplePaths: false,
+            search: "dist",
+            reqs: [["PBS-AS", "PBSS-AS"], ["PBS-AS", "PBSS-AS"]],
+            minCreds: 0,
+            maxCreds: 0,
+            uniqueCourses: 0,
+            majorDep: false
+        },
+        {
+            name: "Mathematics & Quantitative Reasoning (MQR-AS)",
+            multiplePaths: false,
+            search: "dist",
+            reqs: ["MQR-AS"],
+            minCreds: 0,
+            maxCreds: 0,
+            uniqueCourses: 0,
+            majorDep: false
+        },
+        {
+            name: "Five Courses in Liberal Arts",
+            multiplePaths: false,
+            search: "dist",
+            reqs: [["CA-AS", "HA-AS", "KCM-AS", "LA-AS", "SBA-AS"], ["CA-AS", "HA-AS", "KCM-AS", "LA-AS", "SBA-AS"], ["CA-AS", "HA-AS", "KCM-AS", "LA-AS", "SBA-AS"], ["CA-AS", "HA-AS", "KCM-AS", "LA-AS", "SBA-AS"], ["CA-AS", "HA-AS", "KCM-AS", "LA-AS", "SBA-AS"]],
+            minCreds: 0,
+            maxCreds: 0,
+            uniqueCourses: 4,
+            majorDep: false
+        },
+        {
+            name: "Geographic Breadth Requirement (GB)",
+            multiplePaths: false,
+            search: "breadth",
+            reqs: [["GB", "GHB"]],
+            minCreds: 0,
+            maxCreds: 0,
+            uniqueCourses: 0,
+            majorDep: false
+        },
+        {
+            name: "Historic Breadth Requirement (HB)",
+            multiplePaths: false,
+            search: "breadth",
+            reqs: [["HB", "GHB"]],
+            minCreds: 0,
+            maxCreds: 0,
+            uniqueCourses: 0,
+            majorDep: false
+        },
+    ]
 }
 
 const en = {
@@ -49,6 +157,7 @@ const en = {
     requirements: [
         {
             name: "Mathematics",
+            multiplePaths: false,
             search: "full",
             reqs: ["MATH 1910", "MATH 1920", ["MATH 2930", "MATH 2940"]],
             minCreds: 14,
@@ -58,6 +167,7 @@ const en = {
         },
         {
             name: "Physics",
+            multiplePaths: false,
             search: "full",
             reqs: ["PHYS 1112", "PHYS 2213"],
             minCreds: 8,
@@ -67,6 +177,7 @@ const en = {
         },
         {
             name: "Chemistry",
+            multiplePaths: false,
             search: "full",
             reqs: ["CHEM 2090"],
             minCreds: 4,
@@ -76,6 +187,7 @@ const en = {
         },
         {
             name: "Freshman Writing Seminars",
+            multiplePaths: false,
             search: "title",
             reqs: ["FWS:"],
             minCreds: 6,
@@ -85,6 +197,7 @@ const en = {
         },
         {
             name: "Computing",
+            multiplePaths: false,
             search: "full",
             reqs: [["CS 1110", "CS 1112", "CS 1114", "CS 1115"]],
             minCreds: 4,
@@ -94,6 +207,7 @@ const en = {
         },
         {
             name: "Introducation to Engineering",
+            multiplePaths: false,
             search: "subject",
             reqs: ["ENGRI"],
             minCreds: 4,
@@ -103,6 +217,7 @@ const en = {
         },
         {
             name: "Engineering Distribution",
+            multiplePaths: false,
             search: "subject",
             reqs: ["ENGRD"],
             minCreds: 6,
@@ -112,6 +227,7 @@ const en = {
         },
         {
             name: "Liberal Studies Distribution",
+            multiplePaths: false,
             search: "distribution",
             reqs: [["CA", "HA", "LA/LAD", "KCM", "SBA", "FL", "CE"],
             ["CA", "HA", "LA/LAD", "KCM", "SBA", "FL", "CE"],
@@ -126,6 +242,7 @@ const en = {
         },
         {
             name: "Advisor-Approved Electives",
+            multiplePaths: false,
             search: "selfcheck",
             reqs: [],
             minCreds: 6,
@@ -135,6 +252,7 @@ const en = {
         },
         {
             name: "Technical Communication",
+            multiplePaths: false,
             search: "selfcheck",
             reqs: [],
             minCreds: 3,
