@@ -158,7 +158,7 @@ const en = {
         {
             name: "Mathematics",
             multiplePaths: false,
-            search: "full",
+            search: "course",
             reqs: ["MATH 1910", "MATH 1920", ["MATH 2930", "MATH 2940"]],
             minCreds: 14,
             maxCreds: 16,
@@ -168,7 +168,7 @@ const en = {
         {
             name: "Physics",
             multiplePaths: false,
-            search: "full",
+            search: "course",
             reqs: ["PHYS 1112", "PHYS 2213"],
             minCreds: 8,
             maxCreds: 12,
@@ -178,7 +178,7 @@ const en = {
         {
             name: "Chemistry",
             multiplePaths: false,
-            search: "full",
+            search: "course",
             reqs: ["CHEM 2090"],
             minCreds: 4,
             naxCreds: 8,
@@ -198,7 +198,7 @@ const en = {
         {
             name: "Computing",
             multiplePaths: false,
-            search: "full",
+            search: "course",
             reqs: [["CS 1110", "CS 1112", "CS 1114", "CS 1115"]],
             minCreds: 4,
             maxCreds: 4,
