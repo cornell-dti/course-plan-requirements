@@ -3,37 +3,12 @@ const express = require('express');
 
 // MongoDB credentials setup
 const MongoClient = require('mongodb').MongoClient;
-const uri = `mongodb+srv://admin:pass@course-plan-t2nrj.mongodb.net/test?retryWrites=true&w=majority`;
+const { password } = require('./password');
+const uri = `mongodb+srv://admin:${password}@course-plan-t2nrj.mongodb.net/test?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const rosters = ["FA14","WI15","SP15","SU15","FA15","WI16","SP16","SU16","FA16","WI17","SP17","SU17","FA17","WI18","SP18","SU18","FA18","WI19","SP19","SU19","FA19","WI20"];
 const ros = "FA19";
-
-getCourses("FA19", (res) => {
-
-    let prereqs = [];
-    getSubjects("FA19", subjects => {
-
-        res.map(course => {
-            const apiPreReq = course.catalogPrereqCoreq;
-            if (apiPreReq !== "" && apiPreReq !== null) {
-                const parsedPreReq = parsePreReqs(subjects, apiPreReq);
-                prereqs.push({course: course.subject+" "+course.catalogNbr, string: apiPreReq, arr: parsedPreReq});
-            }
-        });
-
-        client.connect((err, db) => {
-            if (err) throw err;
-            var dbo = db.db("course-plan");
-            var myobj = { name: "Pre-Requirements", data: prereqs };
-            dbo.collection("prereqs").insertOne(myobj, (err, res) => {
-                if (err) throw err;
-                console.log("1 document inserted");
-                db.close();
-            });
-        });
-    })
-})
 
 function getCourses(ros, callback) {
     // Function to get all courses from specific roster
@@ -96,4 +71,31 @@ function parsePreReqs(subjects, str) {
     return prereqs;
 }
 
-// parsePreReqs(["LATIN", "CS"], "Prerequisite: LATIN 1205 or grade of A- or above in LATIN 1202, LATIN 1204 or placement CS 1110 by departmental exam");
+function parseDdata(ros) {
+    // Parse prerequirement from data in course roster API
+    getCourses(ros, (res) => {
+
+        let prereqs = [];
+        getSubjects(ros, subjects => {
+    
+            res.map(course => {
+                const apiPreReq = course.catalogPrereqCoreq;
+                if (apiPreReq !== "" && apiPreReq !== null) {
+                    const parsedPreReq = parsePreReqs(subjects, apiPreReq);
+                    prereqs.push({course: course.subject+" "+course.catalogNbr, string: apiPreReq, arr: parsedPreReq});
+                }
+            });
+    
+            client.connect((err, db) => {
+                if (err) throw err;
+                var dbo = db.db("course-plan");
+                var myobj = { name: "Pre-Requirements", data: prereqs };
+                dbo.collection("prereqs").insertOne(myobj, (err, res) => {
+                    if (err) throw err;
+                    console.log("1 document inserted");
+                    return db.close();
+                });
+            });
+        })
+    })
+}
