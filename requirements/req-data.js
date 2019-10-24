@@ -1,6 +1,51 @@
+const university = {
+    type: "all",
+    value: "UNI",
+    name: "University Requirements",
+    requirements: [
+        {
+            name: "Academic Credits",
+            search: "alleligible", // PE and "10XX" courses do not count
+            reqs: [],
+            minCreds: 120,
+            maxCreds: 120,
+            applies: "all"
+        },
+        {
+            name: "Cornell Credits",
+            search: "alleligible",
+            reqs: [],
+            minCreds: 60,
+            maxCreds: 120,
+            applies: "transfers"
+        },
+        {
+            name: "Physical Education",
+            search: "subject",
+            reqs: ["PE", "PE"],
+            minCreds: 2,
+            maxCreds: 2,
+            applies: "all"
+        },
+        {
+            name: "Swimming Test",
+            search: "selfcheck",
+            reqs: [],
+            minCreds: 0,
+            maxCreds: 0,
+            applies: "all"
+        }
+    ]
+}
+
+const as = {
+    type: ""
+}
+
 const en = {
     type: "college",
-    name: "EN",
+    value: "EN",
+    name: "Engineering Requirements",
     requirements: [
         {
             name: "Mathematics",
