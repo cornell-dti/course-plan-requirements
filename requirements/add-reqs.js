@@ -7,6 +7,9 @@ const uri = `mongodb+srv://admin:${password}@course-plan-t2nrj.mongodb.net/test?
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 function addRequirement() {
+    // Add a document with requirement data from the reqs-data file
+
+    // Establish connection to MongoDB
     client.connect((err, db) => {
         if (err) throw err;
 
@@ -14,7 +17,9 @@ function addRequirement() {
         // const insert = requirements.as;
         dbo.collection('requirements').insertOne(insert, (err, res) => {
             if (err) throw err;
-            return db.close();
+
+            // Close connection
+            return client.close();
         })
     })
 }

@@ -7,8 +7,6 @@ const { password } = require('../password');
 const uri = `mongodb+srv://admin:${password}@course-plan-t2nrj.mongodb.net/test?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
-const rosters = ["FA14","WI15","SP15","SU15","FA15","WI16","SP16","SU16","FA16","WI17","SP17","SU17","FA17","WI18","SP18","SU18","FA18","WI19","SP19","SU19","FA19","WI20"];
-const ros = "FA19";
 
 function getCourses(ros, callback) {
     // Function to get all courses from specific roster
@@ -38,8 +36,9 @@ function getCourses(ros, callback) {
     });
 }
 
-// Return a list of all abbreviated subject values
 function getSubjects(ros, callback) {
+    // Return a list of all abbreviated subject values
+
     request(`https://classes.cornell.edu/api/2.0/config/subjects.json?roster=${ros}`, { json: true }, (err, res, subject) => {
         if (err) throw err;
         if (!subject.data) throw URIError;
@@ -51,8 +50,8 @@ function getSubjects(ros, callback) {
     });
 }
 
-// Returns full course name from string
 function parsePreReqs(subjects, str) {
+    // Returns full course name from string
 
     // Sorted to search full subject names first
     subjects.sort((a, b) => b.length - a.length);
