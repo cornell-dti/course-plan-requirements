@@ -11,7 +11,8 @@ function addRequirement() {
         if (err) throw err;
 
         const dbo = db.db('course-plan');
-        dbo.collection('requirements').insertOne(requirements.as, (err, res) => {
+        // const insert = requirements.as;
+        dbo.collection('requirements').insertOne(insert, (err, res) => {
             if (err) throw err;
             return db.close();
         })
