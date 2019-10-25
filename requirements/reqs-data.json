@@ -1,0 +1,266 @@
+{
+    "university": {
+        "type": "university",
+        "value": "UNI",
+        "name": "University Requirements",
+        "requirements": [
+            {
+                "name": "Academic Credits",
+                "search": "all-eligible",
+                "reqs": [],
+                "minCreds": 120,
+                "maxCreds": 120,
+                "applies": "all"
+            },
+            {
+                "name": "Cornell Credits",
+                "search": "all-eligible",
+                "reqs": [],
+                "minCreds": 60,
+                "maxCreds": 120,
+                "applies": "transfers"
+            },
+            {
+                "name": "Physical Education",
+                "search": "subject",
+                "reqs": ["PE", "PE"],
+                "minCreds": 2,
+                "maxCreds": 2,
+                "applies": "all"
+            },
+            {
+                "name": "Swimming Test",
+                "search": "self-check",
+                "reqs": [],
+                "minCreds": 0,
+                "maxCreds": 0,
+                "applies": "all"
+            }
+        ]
+    },
+
+    "as": {
+        "type": "college",
+        "value": "AS",
+        "name": "Arts and Sciences Requirements",
+        "requirements": [
+            {
+                "name": "CAS Credits",
+                "multiplePaths": false,
+                "search": "acad-group",
+                "reqs": ["AS"],
+                "minCreds": 100,
+                "maxCreds": 120,
+                "uniqueCourses": 0,
+                "majorDep": false
+            },
+            {
+                "name": "Freshman Writing Seminars (FWS)",
+                "multiplePaths": false,
+                "search": "title",
+                "reqs": ["FWS:"],
+                "minCreds": 6,
+                "maxCreds": 12,
+                "uniqueCourses": 0,
+                "majorDep": false
+            },
+            {
+                "name": "Foreign Language Requirement",
+                "multiplePaths": true,
+                "paths": [
+                    {
+                        "name": "Intermediate Language Course",
+                        "search": "level",
+                        "reqs": [["CHIN 2000"]],
+                        "minCreds": 0,
+                        "maxCreds": 0,
+                        "uniqueCourses": 0,
+                        "majorDep": false
+                    },
+                    {
+                        "name": "Intermediate Language Course",
+                        "search": "subject",
+                        "reqs": [["CHIN", "FREN"]],
+                        "minCreds": 11,
+                        "maxCreds": 120,
+                        "uniqueCourses": 0,
+                        "majorDep": false
+                    }
+                ]
+            },
+            {
+                "name": "Four Courses in Physical & Biological Sciences and Mathematics & Quantitative Reasoning",
+                "multiplePaths": false,
+                "search": "dist",
+                "reqs": [["PBS-AS", "PBSS-AS", "MQR-AS"], ["PBS-AS", "PBSS-AS", "MQR-AS"], ["PBS-AS", "PBSS-AS", "MQR-AS"], ["PBS-AS", "PBSS-AS", "MQR-AS"]],
+                "minCreds": 0,
+                "maxCreds": 0,
+                "uniqueCourses": 0,
+                "majorDep": false
+            },
+            {
+                "name": "Physical & Biological Sceiences (PBS-AS)",
+                "multiplePaths": false,
+                "search": "dist",
+                "reqs": [["PBS-AS", "PBSS-AS"], ["PBS-AS", "PBSS-AS"]],
+                "minCreds": 0,
+                "maxCreds": 0,
+                "uniqueCourses": 0,
+                "majorDep": false
+            },
+            {
+                "name": "Mathematics & Quantitative Reasoning (MQR-AS)",
+                "multiplePaths": false,
+                "search": "dist",
+                "reqs": ["MQR-AS"],
+                "minCreds": 0,
+                "maxCreds": 0,
+                "uniqueCourses": 0,
+                "majorDep": false
+            },
+            {
+                "name": "Five Courses in Liberal Arts",
+                "multiplePaths": false,
+                "search": "dist",
+                "reqs": [["CA-AS", "HA-AS", "KCM-AS", "LA-AS", "SBA-AS"], ["CA-AS", "HA-AS", "KCM-AS", "LA-AS", "SBA-AS"], ["CA-AS", "HA-AS", "KCM-AS", "LA-AS", "SBA-AS"], ["CA-AS", "HA-AS", "KCM-AS", "LA-AS", "SBA-AS"], ["CA-AS", "HA-AS", "KCM-AS", "LA-AS", "SBA-AS"]],
+                "minCreds": 0,
+                "maxCreds": 0,
+                "uniqueCourses": 4,
+                "majorDep": false
+            },
+            {
+                "name": "Geographic Breadth Requirement (GB)",
+                "multiplePaths": false,
+                "search": "breadth",
+                "reqs": [["GB", "GHB"]],
+                "minCreds": 0,
+                "maxCreds": 0,
+                "uniqueCourses": 0,
+                "majorDep": false
+            },
+            {
+                "name": "Historic Breadth Requirement (HB)",
+                "multiplePaths": false,
+                "search": "breadth",
+                "reqs": [["HB", "GHB"]],
+                "minCreds": 0,
+                "maxCreds": 0,
+                "uniqueCourses": 0,
+                "majorDep": false
+            }
+        ]
+    },
+
+    "en": {
+        "type": "college",
+        "value": "EN",
+        "name": "Engineering Requirements",
+        "requirements": [
+            {
+                "name": "Mathematics",
+                "multiplePaths": false,
+                "search": "course",
+                "reqs": ["MATH 1910", "MATH 1920", ["MATH 2930", "MATH 2940"]],
+                "minCreds": 14,
+                "maxCreds": 16,
+                "uniqueCourses": 0,
+                "majorDep": true
+            },
+            {
+                "name": "Physics",
+                "multiplePaths": false,
+                "search": "course",
+                "reqs": ["PHYS 1112", "PHYS 2213"],
+                "minCreds": 8,
+                "maxCreds": 12,
+                "uniqueCourses": 0,
+                "majorDep": true
+            },
+            {
+                "name": "Chemistry",
+                "multiplePaths": false,
+                "search": "course",
+                "reqs": ["CHEM 2090"],
+                "minCreds": 4,
+                "maxCreds": 8,
+                "uniqueCourses": 0,
+                "majorDep": true
+            },
+            {
+                "name": "Freshman Writing Seminars",
+                "multiplePaths": false,
+                "search": "title",
+                "reqs": ["FWS:"],
+                "minCreds": 6,
+                "maxCreds": 12,
+                "uniqueCourses": 0,
+                "majorDep": false
+            },
+            {
+                "name": "Computing",
+                "multiplePaths": false,
+                "search": "course",
+                "reqs": [["CS 1110", "CS 1112", "CS 1114", "CS 1115"]],
+                "minCreds": 4,
+                "maxCreds": 4,
+                "uniqueCourses": 0,
+                "majorDep": false
+            },
+            {
+                "name": "Introducation to Engineering",
+                "multiplePaths": false,
+                "search": "subject",
+                "reqs": ["ENGRI"],
+                "minCreds": 4,
+                "maxCreds": 4,
+                "uniqueCourses": 0,
+                "majorDep": false
+            },
+            {
+                "name": "Engineering Distribution",
+                "multiplePaths": false,
+                "search": "subject",
+                "reqs": ["ENGRD"],
+                "minCreds": 6,
+                "maxCreds": 8,
+                "uniqueCourses": 0,
+                "majorDep": false
+            },
+            {
+                "name": "Liberal Studies Distribution",
+                "multiplePaths": false,
+                "search": "distribution",
+                "reqs": [["CA", "HA", "LA/LAD", "KCM", "SBA", "FL", "CE"],
+                ["CA", "HA", "LA/LAD", "KCM", "SBA", "FL", "CE"],
+                ["CA", "HA", "LA/LAD", "KCM", "SBA", "FL", "CE"],
+                ["CA", "HA", "LA/LAD", "KCM", "SBA", "FL", "CE"],
+                ["CA", "HA", "LA/LAD", "KCM", "SBA", "FL", "CE"],
+                ["CA", "HA", "LA/LAD", "KCM", "SBA", "FL", "CE"]],
+                "minCreds": 18,
+                "maxCreds": 120,
+                "uniqueCourses": 3,
+                "majorDep": false
+            },
+            {
+                "name": "Advisor-Approved Electives",
+                "multiplePaths": false,
+                "search": "self-check",
+                "reqs": [],
+                "minCreds": 6,
+                "maxCreds": 6,
+                "uniqueCourses": 0,
+                "majorDep": false
+            },
+            {
+                "name": "Technical Communication",
+                "multiplePaths": false,
+                "search": "self-check",
+                "reqs": [],
+                "minCreds": 3,
+                "maxCreds": 4,
+                "uniqueCourses": 0,
+                "majorDep": false
+            }
+        ]
+    }
+}

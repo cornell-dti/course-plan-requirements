@@ -32,7 +32,6 @@ function search() {
     const num = input.split(' ')[1];
 
     $.get('https://classes.cornell.edu/api/2.0/search/classes.json', { roster: 'FA19', subject: sub, q: num }, (data) => {
-        console.log(data);
         if (data.status === 'success') {
             const course = data.data.classes[0];
 
