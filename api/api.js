@@ -3,7 +3,7 @@ const express = require('express');
 
 // MongoDB credentials setup
 const MongoClient = require('mongodb').MongoClient;
-const { password } = require('./password');
+const { password } = require('../password');
 const uri = `mongodb+srv://admin:${password}@course-plan-t2nrj.mongodb.net/test?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -71,7 +71,7 @@ function parsePreReqs(subjects, str) {
     return prereqs;
 }
 
-function parseDdata(ros) {
+function parseData(ros) {
     // Parse prerequirement from data in course roster API
     getCourses(ros, (res) => {
 
@@ -88,6 +88,7 @@ function parseDdata(ros) {
     
             client.connect((err, db) => {
                 if (err) throw err;
+
                 var dbo = db.db("course-plan");
                 var myobj = { name: "Pre-Requirements", data: prereqs };
                 dbo.collection("prereqs").insertOne(myobj, (err, res) => {

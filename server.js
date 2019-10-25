@@ -13,12 +13,26 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 // Load all files in /public folder
 app.use(express.static(`${__dirname}/public`));
 
-app.get('/college', (req, res) => {
-    const { name } = req.query;
+app.get('/api/1.0/requirements', (req, res) => {
+    
+    const query = req.query;
+    let find = ["UNI"];
+
+    if (query.college) {
+        find = find.concat(query.college.split(","));
+    }
+    if (query.major) {
+        find = find.concat(query.major.split(","));
+    }
+    if (query.minor) {
+        find = find.concat(query.minor.split(","));
+    }
 
     client.connect((err) => {
         const collection = client.db('course-plan').collection('requirements');
-        collection.find().toArray((error, doc) => {
+        collection.find({
+            value: {$in: find}
+        }).toArray((error, doc) => {
             res.send(doc);
             client.close();
         });
