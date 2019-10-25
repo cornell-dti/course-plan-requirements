@@ -54,7 +54,7 @@ Argument | Type | Description
                 },
                 {
                     name: "Swimming Test",
-                    search: "selfcheck",
+                    search: "self-check",
                     reqs: [],
                     minCreds: 0,
                     maxCreds: 0,
@@ -155,7 +155,7 @@ Argument | Type | Description
             {
                 name: "Advisor-Approved Electives",
                 multiplePaths: false,
-                search: "selfcheck",
+                search: "self-check",
                 reqs: [],
                 minCreds: 6,
                 maxCreds: 6,
@@ -165,7 +165,7 @@ Argument | Type | Description
             {
                 name: "Technical Communication",
                 multiplePaths: false,
-                search: "selfcheck",
+                search: "self-check",
                 reqs: [],
                 minCreds: 3,
                 maxCreds: 4,
@@ -213,8 +213,8 @@ all-eligible | All courses that are not PE or "10XX" levels
 course | Full course name (CS 1110)
 subject | Course subject (AEM)
 level | Course and level (CHIN 2XXX)
-acadGroup | Academic group (AS)
+acad-group | Academic group (AS)
 dist | Distribution requirement (PBS-AS)
 breadth | Breadth requirement (GB)
 title | Title of the course includes (FWS:)
-selfCheck | User checks off the requirement
+self-check | User checks off the requirement
