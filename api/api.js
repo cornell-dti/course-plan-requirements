@@ -10,7 +10,9 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 
 function getSubjects(ros, callback) {
-    // Return a list of all abbreviated subject values
+    // Description: return a list of all abbreviated subject values
+    // ros: roster used to retrieve subjects array
+    // callback: function applied to the array of subjects
 
     request(`https://classes.cornell.edu/api/2.0/config/subjects.json?roster=${ros}`, { json: true }, (err, res, subject) => {
         if (err) throw err;
@@ -24,11 +26,13 @@ function getSubjects(ros, callback) {
 }
 
 function getCourses(ros, callback) {
-    // Function to get all courses from specific roster
+    // Description: function to get all courses from specific roster
+    // ros: roster used to retrieve courses array
+    // callback: function applied to the array of courses
 
     const result = [];
     getSubjects('FA19', (subjects) => {
-        // array of subjects
+        // Array of subjects
         const sFill = [];
         subjects.forEach((sub) => {
             // Look through all subjects
@@ -53,7 +57,9 @@ function getCourses(ros, callback) {
 }
 
 function parsePreReqs(subjects, str) {
-    // Returns full course name from string
+    // Description: returns array of courses found in string
+    // subjects: list of subjects to guide the search for course names
+    // str: a string with (potentially) full course names
 
     // Sorted to search full subject names first
     subjects.sort((a, b) => b.length - a.length);
@@ -74,7 +80,8 @@ function parsePreReqs(subjects, str) {
 }
 
 function parseData(ros) {
-    // Parse prerequirement from data in course roster API
+    // Description: function to parse all prerequirement in a given roster
+    // ros: roster used to scrape all courses
     getCourses(ros, (res) => {
         // First retrieve all courses
         const prereqs = [];
