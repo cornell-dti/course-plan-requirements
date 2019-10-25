@@ -185,7 +185,7 @@ message | `string` | Message to describe the request result
 data | `object` | Returned data of user requirements
 
 
-#### General
+### General
 Attribute | Type | Description
 ------------ | ------- | -------------
 type | `string` | Category of data ("university", "college", "major", "minor")
@@ -194,14 +194,19 @@ name | `string` | Description of requirement
 multiplePaths | `bool` | Whether a requirement can be satisfied in multiple ways
 search | `string` | Search command for courses
 req | `array` | Search parameters for courses
-minCreds | `int` | Minimum number of credits to satisfy requirement (0 if credits are irrelevant)
-maxCreds | `int` | Recommended maximum number of credits (0 if credits are irrelevant)
-uniqueCourses | `int` | Number of unique req search parameters
+minCreds | `int` | Minimum number of credits to satisfy requirement (0 if credits are not used to track progress)
+maxCreds | `int` | Recommended maximum number of credits (0 if credits are not used to track progress)
+uniqueCourses | `int` | Number of unique req search parameters (0 if irrelevant)
 majorDep | `bool` | Whether specific majors determine requirement
 
-#### Search Commands
+### Rules for req (search parameters)
+- The number of elements in req is used to determine the number of courses required to satisfy the requirement (especially when minCreds is 0 meaning that credits are not used to track requirement progress)
+- Another array in an element is used to represent options. For example `[["CS 1110", "CS 1112"], "CS 2110"]` means that either (CS 1110 or CS 1112) and CS 2110 is required.
 
-Command | Description
+### Search Commands
+Search commands are used to find courses that satisfy the req attribute
+
+Command | Description (reqs)
 ------------ | -------------
 all-eligible | All courses that are not PE nor "10XX" levels
 course | Full course name (CS 1110)
