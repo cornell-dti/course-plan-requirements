@@ -201,7 +201,7 @@ majorDep | `bool` | Whether specific majors determine requirement
 
 ### Rules for req (search parameters)
 - The number of elements in req is used to determine the number of courses required to satisfy the requirement (especially when minCreds is 0 meaning that credits are not used to track requirement progress)
-- Another array in an element is used to represent options. For example `[["CS 1110", "CS 1112"], "CS 2110"]` means that either (CS 1110 or CS 1112) and CS 2110 is required.
+- Another array in an element is used to represent options. For example `[["CS 1110", "CS 1112"], "CS 2110"]` means that (either CS 1110 or CS 1112) and CS 2110 is required.
 
 ### Search Commands
 Search commands are used to find courses that satisfy the req attribute
