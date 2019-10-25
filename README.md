@@ -208,7 +208,8 @@ Search commands are used to find courses that satisfy the req attribute
 
 Command | Description (reqs)
 ------------ | -------------
-all-eligible | All courses that are not PE nor "10XX" levels
+all | All courses
+all-eligible | All courses that are not PE or "10XX" levels
 course | Full course name (CS 1110)
 subject | Course subject (AEM)
 level | Course and level (CHIN 2XXX)
