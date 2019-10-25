@@ -6,7 +6,7 @@ exports.requirements = {
         requirements: [
             {
                 name: "Academic Credits",
-                search: "alleligible", // PE and "10XX" courses do not count
+                search: "all-eligible", // PE and "10XX" courses do not count
                 reqs: [],
                 minCreds: 120,
                 maxCreds: 120,
@@ -14,7 +14,7 @@ exports.requirements = {
             },
             {
                 name: "Cornell Credits",
-                search: "alleligible",
+                search: "all-eligible",
                 reqs: [],
                 minCreds: 60,
                 maxCreds: 120,
