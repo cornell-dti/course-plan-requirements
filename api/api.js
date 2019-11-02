@@ -1,37 +1,51 @@
+// import request package
 const request = require('request');
+// import firebase configuration credentials hidden from gith
+const { firebaseConfig } = require('./config');
+//import Firebase from 'firebase'
+const firebase = require('firebase');
 
-// MongoDB credentials setup
-const { MongoClient } = require('mongodb');
+getCourses("SU19", (res) => {
+}, true)
 
-const { password } = require('../password');
+function getRosters(callback) {
+    // Description: return a list of rosters
+    // @callback: function applied to the list of rosters
 
-const uri = `mongodb+srv://admin:${password}@course-plan-t2nrj.mongodb.net/test?retryWrites=true&w=majority`;
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-
+    request(`https://classes.cornell.edu/api/2.0/config/rosters.json`, { json: true }, (err, res, body) => {
+        if (err) throw err;
+        let rosArr = [];
+        body.data.rosters.map((ros) => {
+            rosArr.push(ros.slug);
+        })
+        return callback(rosArr);
+    })
+}
 
 function getSubjects(ros, callback) {
     // Description: return a list of all abbreviated subject values
-    // ros: roster used to retrieve subjects array
-    // callback: function applied to the array of subjects
+    // @ros: roster used to retrieve subjects array
+    // @callback: function applied to the array of subjects
 
-    request(`https://classes.cornell.edu/api/2.0/config/subjects.json?roster=${ros}`, { json: true }, (err, res, subject) => {
+    request(`https://classes.cornell.edu/api/2.0/config/subjects.json?roster=${ros}`, { json: true }, (err, res, body) => {
         if (err) throw err;
-        if (!subject.data) throw URIError;
-        const result = [];
-        subject.data.subjects.forEach((sub) => {
-            result.push(sub.value);
+        if (!body.data) throw URIError;
+        const subjectsArr = [];
+        body.data.subjects.forEach((sub) => {
+            subjectsArr.push(sub.value);
         });
-        return callback(result);
+        return callback(subjectsArr);
     });
 }
 
-function getCourses(ros, callback) {
+function getCourses(ros, callback, addToDB = false) {
     // Description: function to get all courses from specific roster
-    // ros: roster used to retrieve courses array
-    // callback: function applied to the array of courses
+    // @ros: roster used to retrieve courses array
+    // @callback: function applied to the array of courses
+    // @addToDB: boolean on whether the course is added to DB
 
     const result = [];
-    getSubjects('FA19', (subjects) => {
+    getSubjects(ros, (subjects) => {
         // Array of subjects
         const sFill = [];
         subjects.forEach((sub) => {
@@ -44,6 +58,10 @@ function getCourses(ros, callback) {
                     const courses = body.data.classes;
 
                     courses.forEach((course) => {
+                        if (addToDB) {
+                            addToFirebase(course);
+                        }
+
                         result.push(course);
                         cFill.push(course);
                         if (sFill.length === subjects.length && cFill.length === courses.length) {
@@ -54,6 +72,38 @@ function getCourses(ros, callback) {
             });
         });
     });
+}
+
+function getAll(callback, addToDB = false) {
+    // Description: function to get all courses
+    // @callback: function aplied to the array of courses
+    // @addToDB: boolean on whether the course is added to DB
+    
+    getRosters((rosters) => {
+        rosters.map((ros) => {
+            getCourses(ros, (courseArr) => {
+                callback(courseArr);
+            }, addToDB);
+        })
+    })
+}
+
+function addToFirebase(obj) {
+    // Description: function to add object to CoursePlan firebase
+    // @obj: object to add
+
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    let db = firebase.firestore();
+
+    // firebase collection
+    let emailsCollection = db.collection('courses');
+
+    emailsCollection.add(obj).then(() => {
+        console.log(`${obj.subject} ${obj.catalogNbr} added to Firebase`)
+    })
+    
 }
 
 function parsePreReqs(subjects, str) {
@@ -93,17 +143,7 @@ function parseData(ros) {
                     prereqs.push({ course: `${course.subject} ${course.catalogNbr}`, string: apiPreReq, arr: parsedPreReq });
                 }
             });
-            client.connect((err, db) => {
-                if (err) throw err;
-                const dbo = db.db('course-plan');
-                const myobj = { name: 'Pre-Requirements', data: prereqs };
-
-                dbo.collection('prereqs').insertOne(myobj, (err1, res1) => {
-                    if (err1) throw err1;
-                    console.log(res1);
-                    return db.close();
-                });
-            });
+            // Add data to db
         });
     });
 }
