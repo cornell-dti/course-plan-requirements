@@ -1,0 +1,144 @@
+{
+    "type": "major",
+    "name": "Computer Science",
+    "schools": [
+        "ENG",
+        "AS"
+    ],
+    "requirements": [
+        {
+            "name": "Computer Science Core Requirements",
+            "reqs": [
+                [
+                    "CS 1110",
+                    "CS 1112"
+                ],
+                [
+                    "CS 2110",
+                    "CS 2112"
+                ],
+                [
+                    "CS 2800",
+                    "CS 2802"
+                ],
+                [
+                    "CS 3110"
+                ],
+                [
+                    "CS 3410",
+                    "CS 3420"
+                ],
+                [
+                    "CS 4820"
+                ],
+                [
+                    "CS 4410"
+                ]
+            ]
+        },
+        {
+            "name": "Computer Science Electives",
+            "reqs": [
+                {
+                    "amount": 3,
+                    "creditsPerClass": 3,
+                    "includes": {
+                        "satisfies": "req",
+                        "subject": [
+                            "CS"
+                        ],
+                        "courseLevels": [
+                            "4XX1",
+                            "3152",
+                            "4152",
+                            "4154",
+                            "4740",
+                            "4752",
+                            "5150",
+                            "5152",
+                            "5412",
+                            "5414",
+                            "5431",
+                            "5625",
+                            "5643"
+                        ]
+                    },
+                    "excludes": [
+                        "CS 4090",
+                        "CS 4998",
+                        "CS 4999"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Computer Science Practicum",
+            "reqs": [
+                {
+                    "amount": 1,
+                    "minCredits": 3,
+                    "includes": {
+                        "satisfies": "req",
+                        "subject": [
+                            "CS"
+                        ],
+                        "courseLevels": [
+                            "4XX1",
+                            "3152",
+                            "4152",
+                            "4154",
+                            "4740",
+                            "4752",
+                            "5150",
+                            "5152",
+                            "5412",
+                            "5414",
+                            "5431",
+                            "5625",
+                            "5643"
+                        ]
+                    },
+                    "exlcludes": []
+                },
+                {
+                    "name": "Computer Science Technical Electives",
+                    "reqs": [
+                        {
+                            "amount": 3,
+                            "minCredits": 3,
+                            "includes": [
+                                {
+                                    "satisfies": "req",
+                                    "subject": [
+                                        "CS",
+                                        "MATH",
+                                        "BIOG",
+                                        "ECON",
+                                        "CHEM",
+                                        "PHYS",
+                                        "LING"
+                                    ],
+                                    "courseLevel": "3XXX"
+                                }
+                            ],
+                            "excludes": []
+                        }
+                    ]
+                },
+                {
+                    "name": "Computer Science External Specialization",
+                    "reqs": [
+                        {
+                            "amount": 3,
+                            "minCredits": 3,
+                            "includes": [
+                                "X 3XXX"
+                            ],
+                            "excludes": []
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
