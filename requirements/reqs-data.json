@@ -151,29 +151,7 @@
         ]
     },
 
-    "ag": {
-        "type": "college",
-        "value": "AG",
-        "name": "Agriculture and Life Sciences Requirements",
-        "requirements": [
-            {
-                "name": "CALS Credits",
-                "multiplePaths": false,
-                "search": "acad-group",
-                "reqs": ["AG"],
-                "fulfilledBy": "credit",
-                "minCreds": 55,
-                "maxCreds": 120,
-                "uniqueCourses": 0,
-                "majorDep": false
-            },
-            {
-                "name": "Letter-Graded Credits",
-                "multiplePaths": false
-            }
-        ]
-    },
-
+    
     "en": {
         "type": "college",
         "value": "EN",
