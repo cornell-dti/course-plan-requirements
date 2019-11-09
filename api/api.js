@@ -5,7 +5,7 @@ const { firebaseConfig } = require('./config');
 //import Firebase from 'firebase'
 const firebase = require('firebase');
 
-getCourses("SU19", (res) => {
+getCourses("FA19", (res) => {
 }, true)
 
 function getRosters(callback) {
@@ -58,6 +58,15 @@ function getCourses(ros, callback, addToDB = false) {
                     const courses = body.data.classes;
 
                     courses.forEach((course) => {
+
+                        // Add custom attributes 
+                        course.title = `${course.subject} ${course.catalogNbr}: ${course.titleLong}`;
+                        course.code = `${course.subject} ${course.catalogNbr}`;
+                        course.year = yearInt = parseInt("20"+ros.slice(2));
+                        course.season = ros.slice(0, 2);
+                        course.semester = ros;
+                        course.parsedPreReqs = parsePreReqs(subjects, course.catalogPrereqCoreq);
+
                         if (addToDB) {
                             addToFirebase(course);
                         }
@@ -123,7 +132,6 @@ function parsePreReqs(subjects, str) {
         const { index } = result;
 
         prereqs.push(result[0]);
-
         line = line.substring(index + result[0].length);
     }
     return prereqs;
