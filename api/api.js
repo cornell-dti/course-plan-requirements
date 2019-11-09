@@ -5,8 +5,8 @@ const { firebaseConfig } = require('./config');
 //import Firebase from 'firebase'
 const firebase = require('firebase');
 
-getCourses("FA19", (res) => {
-}, true)
+// getCourses("FA19", (res) => {
+// }, true)
 
 function getRosters(callback) {
     // Description: return a list of rosters
