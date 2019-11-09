@@ -1,3 +1,4 @@
 node_modules/
 password.js
 .DS_Store
+.ipynb_checkpoints/
