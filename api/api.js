@@ -1,25 +1,62 @@
 // import request package
 const request = require('request');
+// import Firebase from 'firebase'
+const firebase = require('firebase');
 // import firebase configuration credentials hidden from gith
 const { firebaseConfig } = require('./config');
-//import Firebase from 'firebase'
-const firebase = require('firebase');
 
 // getCourses("FA19", (res) => {
 // }, true)
+
+function addToFirebase(obj) {
+    // Description: function to add object to CoursePlan firebase
+    // @obj: object to add
+
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.firestore();
+
+    // firebase collection
+    const emailsCollection = db.collection('courses');
+
+    emailsCollection.add(obj).then(() => {
+        console.log(`${obj.subject} ${obj.catalogNbr} added to Firebase`);
+    });
+}
+
+function parsePreReqs(subjects, str) {
+    // Description: returns array of courses found in string
+    // subjects: list of subjects to guide the search for course names
+    // str: a string with (potentially) full course names
+
+    // Sorted to search full subject names first
+    subjects.sort((a, b) => b.length - a.length);
+
+    const regEx = new RegExp(`(${subjects.join('|')}) [0-9]{4}`, 'm');
+
+    const prereqs = [];
+    let line = str;
+    while (regEx.test(line)) {
+        const result = regEx.exec(line);
+        const { index } = result;
+
+        prereqs.push(result[0]);
+        line = line.substring(index + result[0].length);
+    }
+    return prereqs;
+}
 
 function getRosters(callback) {
     // Description: return a list of rosters
     // @callback: function applied to the list of rosters
 
-    request(`https://classes.cornell.edu/api/2.0/config/rosters.json`, { json: true }, (err, res, body) => {
+    request('https://classes.cornell.edu/api/2.0/config/rosters.json', { json: true }, (err, res, body) => {
         if (err) throw err;
-        let rosArr = [];
-        body.data.rosters.map((ros) => {
-            rosArr.push(ros.slug);
-        })
+        const rosArr = [];
+        body.data.rosters.map((ros) => rosArr.push(ros.slug));
         return callback(rosArr);
-    })
+    });
 }
 
 function getSubjects(ros, callback) {
@@ -58,21 +95,21 @@ function getCourses(ros, callback, addToDB = false) {
                     const courses = body.data.classes;
 
                     courses.forEach((course) => {
-
-                        // Add custom attributes 
-                        course.title = `${course.subject} ${course.catalogNbr}: ${course.titleLong}`;
-                        course.code = `${course.subject} ${course.catalogNbr}`;
-                        course.year = yearInt = parseInt("20"+ros.slice(2));
-                        course.season = ros.slice(0, 2);
-                        course.semester = ros;
-                        course.parsedPreReqs = parsePreReqs(subjects, course.catalogPrereqCoreq);
+                        const add = course;
+                        // Add custom attributes
+                        add.title = `${course.subject} ${course.catalogNbr}: ${course.titleLong}`;
+                        add.code = `${course.subject} ${course.catalogNbr}`;
+                        add.year = parseInt(`20${ros.slice(2)}`, 10);
+                        add.season = ros.slice(0, 2);
+                        add.semester = ros;
+                        add.parsedPreReqs = parsePreReqs(subjects, course.catalogPrereqCoreq);
 
                         if (addToDB) {
-                            addToFirebase(course);
+                            addToFirebase(add);
                         }
 
-                        result.push(course);
-                        cFill.push(course);
+                        result.push(add);
+                        cFill.push(add);
                         if (sFill.length === subjects.length && cFill.length === courses.length) {
                             callback(result);
                         }
@@ -87,54 +124,10 @@ function getAll(callback, addToDB = false) {
     // Description: function to get all courses
     // @callback: function aplied to the array of courses
     // @addToDB: boolean on whether the course is added to DB
-    
+
     getRosters((rosters) => {
-        rosters.map((ros) => {
-            getCourses(ros, (courseArr) => {
-                callback(courseArr);
-            }, addToDB);
-        })
-    })
-}
-
-function addToFirebase(obj) {
-    // Description: function to add object to CoursePlan firebase
-    // @obj: object to add
-
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
-    let db = firebase.firestore();
-
-    // firebase collection
-    let emailsCollection = db.collection('courses');
-
-    emailsCollection.add(obj).then(() => {
-        console.log(`${obj.subject} ${obj.catalogNbr} added to Firebase`)
-    })
-    
-}
-
-function parsePreReqs(subjects, str) {
-    // Description: returns array of courses found in string
-    // subjects: list of subjects to guide the search for course names
-    // str: a string with (potentially) full course names
-
-    // Sorted to search full subject names first
-    subjects.sort((a, b) => b.length - a.length);
-
-    const regEx = new RegExp(`(${subjects.join('|')}) [0-9]{4}`, 'm');
-
-    const prereqs = [];
-    let line = str;
-    while (regEx.test(line)) {
-        const result = regEx.exec(line);
-        const { index } = result;
-
-        prereqs.push(result[0]);
-        line = line.substring(index + result[0].length);
-    }
-    return prereqs;
+        rosters.map((ros) => getCourses(ros, (courseArr) => callback(courseArr), addToDB));
+    });
 }
 
 function parseData(ros) {
