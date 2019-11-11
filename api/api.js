@@ -1,3 +1,4 @@
+const fs = require('fs');
 // import request package
 const request = require('request');
 // import Firebase from 'firebase'
@@ -5,8 +6,8 @@ const firebase = require('firebase');
 // import firebase configuration credentials hidden from gith
 const { firebaseConfig } = require('./config');
 
-// getCourses("FA19", (res) => {
-// }, true)
+getCourses("SP20", (res) => {
+}, false)
 
 function addToFirebase(obj) {
     // Description: function to add object to CoursePlan firebase
@@ -81,6 +82,11 @@ function getCourses(ros, callback, addToDB = false) {
     // @callback: function applied to the array of courses
     // @addToDB: boolean on whether the course is added to DB
 
+    // retrieve courses.json data
+    let coursesObj = readJSON('courses.json');
+    const today = new Date();
+    coursesObj.lastScanned = today.toLocaleString();
+
     const result = [];
     getSubjects(ros, (subjects) => {
         // Array of subjects
@@ -104,13 +110,24 @@ function getCourses(ros, callback, addToDB = false) {
                         add.semester = ros;
                         add.parsedPreReqs = parsePreReqs(subjects, course.catalogPrereqCoreq);
 
-                        if (addToDB) {
-                            addToFirebase(add);
-                        }
+                        // add to firebase (if true)
+                        if (addToDB) addToFirebase(add);
 
+                        // add to list
                         result.push(add);
                         cFill.push(add);
+
+                        // add to obj from json file
+                        // will override last semester with ros
+                        coursesObj[add.code] = {
+                            title: add.title,
+                            lastSemester: add.semester
+                        }
+
                         if (sFill.length === subjects.length && cFill.length === courses.length) {
+                            // update courses.json file
+                            console.log(`${ros} scanned`);
+                            updateJSON('courses.json', coursesObj);
                             callback(result);
                         }
                     });
@@ -120,31 +137,23 @@ function getCourses(ros, callback, addToDB = false) {
     });
 }
 
-function getAll(callback, addToDB = false) {
-    // Description: function to get all courses
-    // @callback: function aplied to the array of courses
-    // @addToDB: boolean on whether the course is added to DB
-
+function getAllCourses(addToDB = false) {
     getRosters((rosters) => {
-        rosters.map((ros) => getCourses(ros, (courseArr) => callback(courseArr), addToDB));
-    });
+        rosters.map(ros => {
+            console.log(ros);
+            getCourses(ros, (res) => {
+                console.log(ros+" scanned");
+            }, addToDB);
+        })
+    })
 }
 
-function parseData(ros) {
-    // Description: function to parse all prerequirement in a given roster
-    // ros: roster used to scrape all courses
-    getCourses(ros, (res) => {
-        // First retrieve all courses
-        const prereqs = [];
-        getSubjects(ros, (subjects) => {
-            res.forEach((course) => {
-                const apiPreReq = course.catalogPrereqCoreq;
-                if (apiPreReq !== '' && apiPreReq !== null) {
-                    const parsedPreReq = parsePreReqs(subjects, apiPreReq);
-                    prereqs.push({ course: `${course.subject} ${course.catalogNbr}`, string: apiPreReq, arr: parsedPreReq });
-                }
-            });
-            // Add data to db
-        });
-    });
+function readJSON(fileName) {
+    let json = fs.readFileSync(fileName);
+    return JSON.parse(json);
+}
+
+function updateJSON(fileName, obj) {
+    let json = JSON.stringify(obj);
+    fs.writeFileSync(fileName, json);
 }
