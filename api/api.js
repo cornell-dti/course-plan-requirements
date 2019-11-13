@@ -6,9 +6,9 @@ const firebase = require('firebase');
 // import firebase configuration credentials hidden from git
 const { firebaseConfig } = require('./config');
 
-// getCourses("WI19", (res) => {
-// }, true);
-generateJSON();
+getCourses("WI20", (res) => {
+}, true);
+// generateJSON();
 
 function addToFirebase(obj) {
     // Description: function to add object to CoursePlan firebase
@@ -20,7 +20,7 @@ function addToFirebase(obj) {
     const db = firebase.firestore();
 
     // firebase collection
-    const courses = db.collection('test');
+    const courses = db.collection('courses');
 
     courses.doc(`${obj.subject}${obj.catalogNbr}-${obj.semester}`).set(obj).then(() => {
         console.log(`${obj.subject} ${obj.catalogNbr} added to Firebase`);
@@ -102,6 +102,7 @@ function getCourses(ros, callback, addToDB = false) {
                         const add = course;
                         // Add custom attributes
                         add.title = `${course.subject} ${course.catalogNbr}: ${course.titleLong}`;
+                        add.catalogNbr = parseInt(add.catalogNbr);
                         add.code = `${course.subject} ${course.catalogNbr}`;
                         add.year = parseInt(`20${ros.slice(2)}`, 10);
                         add.season = ros.slice(0, 2);
