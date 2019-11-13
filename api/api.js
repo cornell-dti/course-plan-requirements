@@ -3,15 +3,15 @@ const fs = require('fs');
 const request = require('request');
 // import Firebase from 'firebase'
 const firebase = require('firebase');
-// import firebase configuration credentials hidden from gith
+// import firebase configuration credentials hidden from git
 const { firebaseConfig } = require('./config');
 
-getCourses("SP20", (res) => {
-}, false)
+getCourses("WI20", (res) => {
+}, true);
 
 function addToFirebase(obj) {
     // Description: function to add object to CoursePlan firebase
-    // @obj: object to add
+    // @obj: object to add (must include subject, catalogNbr, and semester attributes)
 
     if (!firebase.apps.length) {
         firebase.initializeApp(firebaseConfig);
@@ -19,10 +19,13 @@ function addToFirebase(obj) {
     const db = firebase.firestore();
 
     // firebase collection
-    const emailsCollection = db.collection('courses');
+    const collName = 'courses';
+    const courses = db.collection(collName);
 
-    emailsCollection.add(obj).then(() => {
+    courses.doc(`${obj.subject}${obj.catalogNbr}-${obj.semester}`).set(obj).then(() => {
         console.log(`${obj.subject} ${obj.catalogNbr} added to Firebase`);
+    }).catch(() => {
+        console.log(`Unable to add ${obj.subject} ${obj.catalogNbr}`)
     });
 }
 
@@ -76,16 +79,18 @@ function getSubjects(ros, callback) {
     });
 }
 
-function getCourses(ros, callback, addToDB = false) {
+function getCourses(ros, callback, addToDB = false, appendJSON = false) {
     // Description: function to get all courses from specific roster
     // @ros: roster used to retrieve courses array
     // @callback: function applied to the array of courses
     // @addToDB: boolean on whether the course is added to DB
 
     // retrieve courses.json data
-    let coursesObj = readJSON('courses.json');
-    const today = new Date();
-    coursesObj.lastScanned = today.toLocaleString();
+    if (appendJSON) {
+        let coursesObj = readJSON('courses.json');
+        const today = new Date();
+        coursesObj.lastScanned = today.toLocaleString();
+    } 
 
     const result = [];
     getSubjects(ros, (subjects) => {
@@ -119,15 +124,17 @@ function getCourses(ros, callback, addToDB = false) {
 
                         // add to obj from json file
                         // will override last semester with ros
-                        coursesObj[add.code] = {
-                            title: add.title,
-                            lastSemester: add.semester
+                        if (appendJSON) {
+                            coursesObj[add.code] = {
+                                title: add.title,
+                                lastSemester: add.semester
+                            }
                         }
 
                         if (sFill.length === subjects.length && cFill.length === courses.length) {
                             // update courses.json file
                             console.log(`${ros} scanned`);
-                            updateJSON('courses.json', coursesObj);
+                            if (appendJSON) updateJSON('courses.json', coursesObj);
                             callback(result);
                         }
                     });
