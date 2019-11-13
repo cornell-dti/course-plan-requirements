@@ -6,8 +6,9 @@ const firebase = require('firebase');
 // import firebase configuration credentials hidden from git
 const { firebaseConfig } = require('./config');
 
-getCourses("WI20", (res) => {
-}, true);
+// getCourses("WI19", (res) => {
+// }, true);
+generateJSON();
 
 function addToFirebase(obj) {
     // Description: function to add object to CoursePlan firebase
@@ -19,8 +20,7 @@ function addToFirebase(obj) {
     const db = firebase.firestore();
 
     // firebase collection
-    const collName = 'courses';
-    const courses = db.collection(collName);
+    const courses = db.collection('test');
 
     courses.doc(`${obj.subject}${obj.catalogNbr}-${obj.semester}`).set(obj).then(() => {
         console.log(`${obj.subject} ${obj.catalogNbr} added to Firebase`);
@@ -79,18 +79,11 @@ function getSubjects(ros, callback) {
     });
 }
 
-function getCourses(ros, callback, addToDB = false, appendJSON = false) {
+function getCourses(ros, callback, addToDB = false) {
     // Description: function to get all courses from specific roster
     // @ros: roster used to retrieve courses array
     // @callback: function applied to the array of courses
     // @addToDB: boolean on whether the course is added to DB
-
-    // retrieve courses.json data
-    if (appendJSON) {
-        let coursesObj = readJSON('courses.json');
-        const today = new Date();
-        coursesObj.lastScanned = today.toLocaleString();
-    } 
 
     const result = [];
     getSubjects(ros, (subjects) => {
@@ -122,19 +115,9 @@ function getCourses(ros, callback, addToDB = false, appendJSON = false) {
                         result.push(add);
                         cFill.push(add);
 
-                        // add to obj from json file
-                        // will override last semester with ros
-                        if (appendJSON) {
-                            coursesObj[add.code] = {
-                                title: add.title,
-                                lastSemester: add.semester
-                            }
-                        }
-
                         if (sFill.length === subjects.length && cFill.length === courses.length) {
                             // update courses.json file
                             console.log(`${ros} scanned`);
-                            if (appendJSON) updateJSON('courses.json', coursesObj);
                             callback(result);
                         }
                     });
@@ -152,6 +135,41 @@ function getAllCourses(addToDB = false) {
                 console.log(ros+" scanned");
             }, addToDB);
         })
+    })
+}
+
+function generateJSON() {
+    getRosters(ros => {
+        let coursesObj = readJSON('courses.json');
+        const today = new Date();
+        coursesObj.lastScanned = today.toLocaleString();
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+    
+        // firebase collection
+        db.collection('courses').get()
+            .then(snapshot => {
+                snapshot.forEach(doc => {
+                    const course = doc.data();
+
+                    // Check if course exists and add if it either doesn't or override with last semester
+                    if (!coursesObj[course.code] || ros.indexOf(coursesObj[course.code].sem) < ros.indexOf(course.semester)) {
+                        coursesObj[course.code] = {
+                            t: course.title,
+                            sem: course.semester
+                        }
+                    }
+                })
+
+                updateJSON('courses.json', coursesObj);
+            })
+            .catch(err => {
+                console.log('Error getting docs', err);
+            })
+
     })
 }
 
