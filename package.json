@@ -21,8 +21,9 @@
   "homepage": "https://github.com/cornell-dti/cp-requirements#readme",
   "dependencies": {
     "express": "^4.17.1",
+    "firebase": "^7.2.3",
     "mongodb": "^3.3.2",
-    "mongoose": "^5.7.4"
+    "request": "^2.88.0"
   },
   "devDependencies": {
     "eslint": "^6.5.1",
