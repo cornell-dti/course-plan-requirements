@@ -6,7 +6,7 @@ const firebase = require('firebase');
 // import firebase configuration credentials hidden from git
 const { firebaseConfig } = require('./config');
 
-getCourses("WI20", (res) => {
+getCourses("SP18", (res) => {
 }, true);
 // generateJSON();
 
