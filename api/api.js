@@ -6,9 +6,10 @@ const firebase = require('firebase');
 // import firebase configuration credentials hidden from git
 const { firebaseConfig } = require('./config');
 
-getCourses("SP18", (res) => {
-}, true);
+// getCourses("SP18", (res) => {
+// }, true);
 // generateJSON();
+queryFirebase("semester", "==", "SP18");
 
 function addToFirebase(obj) {
     // Description: function to add object to CoursePlan firebase
@@ -182,4 +183,28 @@ function readJSON(fileName) {
 function updateJSON(fileName, obj) {
     let json = JSON.stringify(obj);
     fs.writeFileSync(fileName, json);
+}
+
+function queryFirebase(key, condition, value) {
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.firestore();
+
+    // firebase collection
+    const courses = db.collection('courses');
+
+    let query = courses.where(key, condition, value).get()
+        .then(snapshot => {
+            if (snapshot.empty) {
+                console.log('No matching documents.');
+                return;
+            }
+            snapshot.forEach(doc => {
+                console.log(doc.id, '=>', doc.data());
+              });
+        })
+        .catch(err => {
+            console.log('Error getting documents', err);
+        })
 }
