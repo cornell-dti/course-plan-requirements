@@ -1,0 +1,101 @@
+{
+  "type": "major",
+  "name": "Hotel Administration",
+  "schools": [
+    "HOTEL"
+  ],
+  "requirements": [
+    {
+      "name": "Hotel Administration Core Requirements",
+      "reqs": [
+        "HADM 1150",
+        "HADM 1410",
+        "HADM 1650",
+        "HADM 1740",
+        "HADM 1350",
+        "HADM 1360",
+        "HADM 1210",
+        "HADM 2010",
+        "HADM 2810",
+        "HADM 2210",
+        "HADM 2220",
+        "HADM 2360",
+        "HADM 2430",
+        "HADM 2550",
+        "HADM 3010",
+        "HADM 3350",
+        "HADM 3210",
+        "HADM 3550",
+        "HADM 3650",
+        "HADM 3870",
+        "HADM 4410"
+      ]
+    }
+  ],
+  "concentration-requirements": [
+    {
+      "name": "Corporate Finance",
+      "reqs": []
+    },
+    {
+      "name": "General Financial Management",
+      "reqs": []
+    },
+    {
+      "name": "Hospitality Controllership",
+      "reqs": []
+    },
+    {
+      "name": "Security Analyst/Investment Banking",
+      "reqs": []
+    },
+    {
+      "name": "Design",
+      "reqs": []
+    },
+    {
+      "name": "Development",
+      "reqs": []
+    },
+    {
+      "name": "Human Resources",
+      "reqs": []
+    },
+    {
+      "name": "Law",
+      "reqs": []
+    },
+    {
+      "name": "Managerial Leadership",
+      "reqs": []
+    },
+    {
+      "name": "Entrepreneurship",
+      "reqs": []
+    },
+    {
+      "name": "Beverage Management",
+      "reqs": []
+    },
+    {
+      "name": "Corporate Food & Beverage Operations",
+      "reqs": []
+    },
+    {
+      "name": "Information Systems Management",
+      "reqs": []
+    },
+    {
+      "name": "Revenue Management",
+      "reqs": []
+    },
+    {
+      "name": "Services Marketing Management",
+      "reqs": []
+    },
+    {
+      "name": "Specialty Operations",
+      "reqs": []
+    }
+  ]
+}
