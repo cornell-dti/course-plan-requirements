@@ -6,10 +6,12 @@ const firebase = require('firebase');
 // import firebase configuration credentials hidden from git
 const { firebaseConfig } = require('./config');
 
-// getCourses("SP18", (res) => {
+// getCourses("WI20", (res) => {
+//     res.map(course => {
+//         addToFirebase(course);
+//     })
 // }, true);
-// generateJSON();
-queryFirebase("semester", "==", "SP18");
+generateJSON();
 
 function addToFirebase(obj) {
     // Description: function to add object to CoursePlan firebase
@@ -22,10 +24,9 @@ function addToFirebase(obj) {
 
     // firebase collection
     const courses = db.collection('courses');
-
-    courses.doc(`${obj.subject}${obj.catalogNbr}-${obj.semester}`).set(obj).then(() => {
+    courses.doc(`${obj.subject}${obj.catalogNbr}`).set(obj).then(() => {
         console.log(`${obj.subject} ${obj.catalogNbr} added to Firebase`);
-    }).catch(() => {
+    }).catch((err) => {
         console.log(`Unable to add ${obj.subject} ${obj.catalogNbr}`)
     });
 }
@@ -80,11 +81,10 @@ function getSubjects(ros, callback) {
     });
 }
 
-function getCourses(ros, callback, addToDB = false) {
+function getCourses(ros, callback) {
     // Description: function to get all courses from specific roster
     // @ros: roster used to retrieve courses array
     // @callback: function applied to the array of courses
-    // @addToDB: boolean on whether the course is added to DB
 
     const result = [];
     getSubjects(ros, (subjects) => {
@@ -109,9 +109,6 @@ function getCourses(ros, callback, addToDB = false) {
                         add.season = ros.slice(0, 2);
                         add.semester = ros;
                         add.parsedPreReqs = parsePreReqs(subjects, course.catalogPrereqCoreq);
-
-                        // add to firebase (if true)
-                        if (addToDB) addToFirebase(add);
 
                         // add to list
                         result.push(add);
@@ -156,13 +153,9 @@ function generateJSON() {
             .then(snapshot => {
                 snapshot.forEach(doc => {
                     const course = doc.data();
-
-                    // Check if course exists and add if it either doesn't or override with last semester
-                    if (!coursesObj[course.code] || ros.indexOf(coursesObj[course.code].sem) < ros.indexOf(course.semester)) {
-                        coursesObj[course.code] = {
-                            t: course.title,
-                            sem: course.semester
-                        }
+                    // Add course to JSON
+                    coursesObj[course.code] = {
+                        t: course.title
                     }
                 })
 
