@@ -1,171 +1,99 @@
 const fs = require('fs');
 // import request package
-const request = require('request');
-// import Firebase from 'firebase'
-const firebase = require('firebase');
-// import firebase configuration credentials hidden from git
-const { firebaseConfig } = require('./config');
+const rp = require("request-promise");
 
-// getCourses("WI20", (res) => {
-//     res.map(course => {
-//         addToFirebase(course);
-//     })
-// }, true);
-generateJSON();
+getAllCoursesFromAllSemesters();
 
-function addToFirebase(obj) {
-    // Description: function to add object to CoursePlan firebase
-    // @obj: object to add (must include subject, catalogNbr, and semester attributes)
-
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
-    const db = firebase.firestore();
-
-    // firebase collection
-    const courses = db.collection('courses');
-    courses.doc(`${obj.subject}${obj.catalogNbr}`).set(obj).then(() => {
-        console.log(`${obj.subject} ${obj.catalogNbr} added to Firebase`);
-    }).catch((err) => {
-        console.log(`Unable to add ${obj.subject} ${obj.catalogNbr}`)
-    });
-}
-
-function parsePreReqs(subjects, str) {
-    // Description: returns array of courses found in string
-    // subjects: list of subjects to guide the search for course names
-    // str: a string with (potentially) full course names
-
-    // Sorted to search full subject names first
-    subjects.sort((a, b) => b.length - a.length);
-
-    const regEx = new RegExp(`(${subjects.join('|')}) [0-9]{4}`, 'm');
-
-    const prereqs = [];
-    let line = str;
-    while (regEx.test(line)) {
-        const result = regEx.exec(line);
-        const { index } = result;
-
-        prereqs.push(result[0]);
-        line = line.substring(index + result[0].length);
-    }
-    return prereqs;
-}
-
-function getRosters(callback) {
+function getRosters() {
     // Description: return a list of rosters
-    // @callback: function applied to the list of rosters
 
-    request('https://classes.cornell.edu/api/2.0/config/rosters.json', { json: true }, (err, res, body) => {
-        if (err) throw err;
-        const rosArr = [];
-        body.data.rosters.map((ros) => rosArr.push(ros.slug));
-        return callback(rosArr);
-    });
-}
-
-function getSubjects(ros, callback) {
-    // Description: return a list of all abbreviated subject values
-    // @ros: roster used to retrieve subjects array
-    // @callback: function applied to the array of subjects
-
-    request(`https://classes.cornell.edu/api/2.0/config/subjects.json?roster=${ros}`, { json: true }, (err, res, body) => {
-        if (err) throw err;
-        if (!body.data) throw URIError;
-        const subjectsArr = [];
-        body.data.subjects.forEach((sub) => {
-            subjectsArr.push(sub.value);
-        });
-        return callback(subjectsArr);
-    });
-}
-
-function getCourses(ros, callback) {
-    // Description: function to get all courses from specific roster
-    // @ros: roster used to retrieve courses array
-    // @callback: function applied to the array of courses
-
-    const result = [];
-    getSubjects(ros, (subjects) => {
-        // Array of subjects
-        const sFill = [];
-        subjects.forEach((sub) => {
-            // Look through all subjects
-            request(`https://classes.cornell.edu/api/2.0/search/classes.json?roster=${ros}&subject=${sub}`, { json: true }, (err, res, body) => {
-                if (body) {
-                    sFill.push(sub);
-                    // array of courses
-                    const cFill = [];
-                    const courses = body.data.classes;
-
-                    courses.forEach((course) => {
-                        const add = course;
-                        // Add custom attributes
-                        add.title = `${course.subject} ${course.catalogNbr}: ${course.titleLong}`;
-                        add.catalogNbr = parseInt(add.catalogNbr);
-                        add.code = `${course.subject} ${course.catalogNbr}`;
-                        add.year = parseInt(`20${ros.slice(2)}`, 10);
-                        add.season = ros.slice(0, 2);
-                        add.semester = ros;
-                        add.parsedPreReqs = parsePreReqs(subjects, course.catalogPrereqCoreq);
-
-                        // add to list
-                        result.push(add);
-                        cFill.push(add);
-
-                        if (sFill.length === subjects.length && cFill.length === courses.length) {
-                            // update courses.json file
-                            console.log(`${ros} scanned`);
-                            callback(result);
-                        }
-                    });
-                }
-            });
-        });
-    });
-}
-
-function getAllCourses(addToDB = false) {
-    getRosters((rosters) => {
-        rosters.map(ros => {
-            console.log(ros);
-            getCourses(ros, (res) => {
-                console.log(ros+" scanned");
-            }, addToDB);
+    return new Promise((resolve, reject) => {
+        rp('https://classes.cornell.edu/api/2.0/config/rosters.json').then(res => {
+            const rosters = JSON.parse(res);
+            const rostersArray = rosters.data.rosters.map(roster => roster.slug);
+            
+            resolve(rostersArray);
         })
     })
 }
 
-function generateJSON() {
-    getRosters(ros => {
-        let coursesObj = readJSON('courses.json');
-        const today = new Date();
-        coursesObj.lastScanned = today.toLocaleString();
+function getSubjects(roster) {
+    // Description: return a list of all abbreviated subject values
+    // @ros: roster used to retrieve subjects array
 
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        const db = firebase.firestore();
-    
-        // firebase collection
-        db.collection('courses').get()
-            .then(snapshot => {
-                snapshot.forEach(doc => {
-                    const course = doc.data();
-                    // Add course to JSON
-                    coursesObj[course.code] = {
-                        t: course.title
+    return new Promise((resolve, reject) => {
+        rp(`https://classes.cornell.edu/api/2.0/config/subjects.json?roster=${roster}`).then(res => {
+            const subjects = JSON.parse(res);
+            const subjectsArray = subjects.data.subjects.map(subject => subject.value);
+
+            resolve(subjectsArray);
+        })
+    })
+}
+
+function getCoursesFromRosterAndSubject(roster, subject) {
+    // Description: function to get all courses from specific roster
+    // @ros: roster used to retrieve courses array
+    return new Promise((resolve, reject) => {
+        rp(`https://classes.cornell.edu/api/2.0/search/classes.json?roster=${roster}&subject=${subject}`).then(res => {
+            const course = JSON.parse(res);
+            resolve(course.data.classes);
+        })
+    })
+}
+
+/**
+ * Scrapes through all courses data to update course.json
+ */
+function getAllCoursesFromAllSemesters() {
+
+    getRosters().then(rostersArray => {
+        rostersArray.forEach((roster, i) => {
+            setTimeout(() => {
+                
+                // Function call
+                getSubjects(roster).then(subjectsArray => {
+
+                    try {
+                        const requests = subjectsArray.map(subject => getCoursesFromRosterAndSubject(roster, subject));
+                        Promise.all(requests).then(res => {
+                            generateJSON(roster, res);
+                            console.log(roster, "added");
+                        })
+                    }
+
+                    catch(err) {
+                        console.log("Error with adding");
                     }
                 })
-
-                updateJSON('courses.json', coursesObj);
-            })
-            .catch(err => {
-                console.log('Error getting docs', err);
-            })
-
+                // Allow delay to prevent overload
+            }, i * 15 * 1000);
+        });
     })
+}
+
+/**
+ * Takes array of classes from API
+ */
+function generateJSON(roster, coursesBySubject) {
+
+    // Get course object from courses.json JSON. Should contain lastScanned key
+    let coursesObject = readJSON('courses.json');
+
+    const today = new Date();
+    coursesObject.lastScanned = today.toLocaleString();
+
+    coursesBySubject.forEach(courses => {
+        courses.forEach(course => {
+
+        coursesObject[`${course.subject} ${course.catalogNbr}`] = {
+            t: course.titleLong,
+            r: roster
+        }
+        })
+    })
+
+    updateJSON('courses.json', coursesObject);
 }
 
 function readJSON(fileName) {
@@ -176,28 +104,4 @@ function readJSON(fileName) {
 function updateJSON(fileName, obj) {
     let json = JSON.stringify(obj);
     fs.writeFileSync(fileName, json);
-}
-
-function queryFirebase(key, condition, value) {
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
-    const db = firebase.firestore();
-
-    // firebase collection
-    const courses = db.collection('courses');
-
-    let query = courses.where(key, condition, value).get()
-        .then(snapshot => {
-            if (snapshot.empty) {
-                console.log('No matching documents.');
-                return;
-            }
-            snapshot.forEach(doc => {
-                console.log(doc.id, '=>', doc.data());
-              });
-        })
-        .catch(err => {
-            console.log('Error getting documents', err);
-        })
 }
